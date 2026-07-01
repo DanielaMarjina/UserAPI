@@ -44,8 +44,29 @@ class User(BaseModel):
     age: int
 
 
-@app.post("/users")
+@app.post("/users", status_code=201)
 def create_user(user: User):
     new_user = {"id": len(users) + 1, "name": user.name, "age": user.age}
     users.append(new_user)
     return new_user
+
+
+@app.put("/users/{user_id}")
+def update_user(user_id: int, updated_user: User):
+    for user in users:
+        if user["id"] == user_id:
+            user["name"] = updated_user.name
+            user["age"] = updated_user.age
+            return user
+
+    raise HTTPException(status_code=404, detail="User not found")
+
+
+@app.delete("/users/{user_id}")
+def delete_user(user_id: int):
+    for user in users:
+        if user["id"] == user_id:
+            users.remove(user)
+            return {"message": "User deleted"}
+
+    raise HTTPException(status_code=404, detail="User not found")
