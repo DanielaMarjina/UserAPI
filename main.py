@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -35,4 +36,16 @@ def get_user_by_id(user_id: int):
     for user in users:
         if user["id"] == user_id:
             return user
-    return {"message": "User not found"}
+    raise HTTPException(status_code=404, detail="User not found")
+
+
+class User(BaseModel):
+    name: str
+    age: int
+
+
+@app.post("/users")
+def create_user(user: User):
+    new_user = {"id": len(users) + 1, "name": user.name, "age": user.age}
+    users.append(new_user)
+    return new_user
