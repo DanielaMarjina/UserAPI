@@ -4,60 +4,49 @@ from app.models import User
 
 from app.data import users
 
+from app.services import (
+    home_message,
+    about,
+    get_users,
+    get_user_by_id,
+    create_user,
+    update_user,
+    delete_user,
+)
+
 router = APIRouter()
 
 
 @router.get("/")
 def home():
-    return {"message": "Hello, World!"}
+    return home_message()
 
 
 @router.get("/about")
-def about():
-    return {"language": "Python", "framework": "FastAPI"}
-
-
-@router.get("/name")
-def get_name():
-    return {"name": "Daniela"}
+def about_project():
+    return about()
 
 
 @router.get("/users")
-def get_users():
-    return users
+def get_all_users():
+    return get_users()
 
 
 @router.get("/users/{user_id}")
-def get_user_by_id(user_id: int):
-    for user in users:
-        if user["id"] == user_id:
-            return user
-    raise HTTPException(status_code=404, detail="User not found")
+def get_user(user_id: int):
+    return get_user_by_id(user_id)
 
 
 @router.post("/users", status_code=201)
-def create_user(user: User):
-    new_user = {"id": len(users) + 1, "name": user.name, "age": user.age}
-    users.append(new_user)
-    return new_user
+def create_new_user(user: User):
+    return create_user(user)
 
 
 @router.put("/users/{user_id}")
-def update_user(user_id: int, updated_user: User):
-    for user in users:
-        if user["id"] == user_id:
-            user["name"] = updated_user.name
-            user["age"] = updated_user.age
-            return user
-
-    raise HTTPException(status_code=404, detail="User not found")
+def update_existing_user(user_id: int, updated_user: User):
+    return update_user(user_id, updated_user)
 
 
 @router.delete("/users/{user_id}")
-def delete_user(user_id: int):
-    for user in users:
-        if user["id"] == user_id:
-            users.remove(user)
-            return {"message": "User deleted"}
-
-    raise HTTPException(status_code=404, detail="User not found")
+def delete_existing_user(user_id: int):
+    return delete_user(user_id)
