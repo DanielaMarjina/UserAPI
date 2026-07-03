@@ -45,3 +45,11 @@ def delete_user(user_id: int):
             return {"message": "User deleted"}
 
     raise HTTPException(status_code=404, detail="User not found")
+
+
+def get_adults():
+    adults = []
+    for user in users:
+        if user["age"] >= 18:
+            adults.append(user)
+    return adults

@@ -12,6 +12,7 @@ from app.services import (
     create_user,
     update_user,
     delete_user,
+    get_adults,
 )
 
 router = APIRouter()
@@ -50,3 +51,8 @@ def update_existing_user(user_id: int, updated_user: User):
 @router.delete("/users/{user_id}")
 def delete_existing_user(user_id: int):
     return delete_user(user_id)
+
+
+@router.get("/adults")
+def adults():
+    return get_adults()
